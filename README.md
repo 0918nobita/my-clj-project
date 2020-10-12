@@ -1,5 +1,7 @@
 # My first Clojure project
 
+![Lint](https://github.com/0918nobita/my-clj-project/workflows/Lint/badge.svg)
+
 Generate JVM bytecode at runtime
 
 ## Usage
