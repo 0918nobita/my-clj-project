@@ -7,8 +7,10 @@
    (org.objectweb.asm ClassWriter)
    (vision.kodai.clj Main)))
 
-(defn -main []
-  (let [cw (ClassWriter. 0)]
+(defn -main [& args]
+  (let [
+        msg (if-let [[str] args] str "Hello from ASM")
+        cw (ClassWriter. 0)]
     (.visit
      cw
      (Main/V1_5)
@@ -31,7 +33,7 @@
       (doto main-method-visitor
         (.visitCode)
         (.visitFieldInsn (Main/GETSTATIC) "java/lang/System" "out" "Ljava/io/PrintStream;")
-        (.visitLdcInsn "Hello from ASM")
+        (.visitLdcInsn msg)
         (.visitMethodInsn (Main/INVOKEVIRTUAL) "java/io/PrintStream" "println" "(Ljava/lang/String;)V")
         (.visitInsn (Main/RETURN))
         (.visitMaxs 2 1)
