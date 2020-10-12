@@ -3,13 +3,18 @@
     :name vision.kodai.clj.Main
     :implements [org.objectweb.asm.Opcodes])
   (:import
-   (java.io DataOutputStream FileOutputStream)
-   (org.objectweb.asm ClassWriter)
-   (vision.kodai.clj Main)))
+    (java.io
+      DataOutputStream
+      FileOutputStream)
+    (org.objectweb.asm
+      ClassWriter)
+    (vision.kodai.clj
+      Main)))
 
-(defn -main [& args]
-  (let [
-        msg (if-let [[str] args] str "Hello from ASM")
+
+(defn -main
+  [& args]
+  (let [msg (if-let [[str] args] str "Hello from ASM")
         cw (ClassWriter. 0)]
     (.visit cw
             (Main/V1_5)
@@ -27,7 +32,7 @@
                         nil
                         nil)]
       (doto
-       init-method-visitor
+        init-method-visitor
         (.visitCode)
         (.visitVarInsn (Main/ALOAD) 0)
         (.visitMethodInsn (Main/INVOKESPECIAL) "java/lang/Object" "<init>" "()V")
