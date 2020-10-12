@@ -11,15 +11,21 @@
   (let [
         msg (if-let [[str] args] str "Hello from ASM")
         cw (ClassWriter. 0)]
-    (.visit
-     cw
-     (Main/V1_5)
-     (+ (Main/ACC_PUBLIC) (Main/ACC_SUPER))
-     "HelloFromASM"
-     nil
-     "java/lang/Object"
-     nil)
-    (let [init-method-visitor (.visitMethod cw (Main/ACC_PUBLIC) "<init>" "()V" nil nil)]
+    (.visit cw
+            (Main/V1_5)
+            (+ (Main/ACC_PUBLIC) (Main/ACC_SUPER))
+            "HelloFromASM"
+            nil
+            "java/lang/Object"
+            nil)
+
+    (let [init-method-visitor
+          (.visitMethod cw
+                        (Main/ACC_PUBLIC)
+                        "<init>"
+                        "()V"
+                        nil
+                        nil)]
       (doto
        init-method-visitor
         (.visitCode)
@@ -28,17 +34,28 @@
         (.visitInsn (Main/RETURN))
         (.visitMaxs 1 1)
         (.visitEnd)))
+
     (let [main-method-visitor
-          (.visitMethod cw (+ (Main/ACC_PUBLIC) (Main/ACC_STATIC)) "main" "([Ljava/lang/String;)V" nil nil)]
+          (.visitMethod cw
+                        (+ (Main/ACC_PUBLIC) (Main/ACC_STATIC))
+                        "main"
+                        "([Ljava/lang/String;)V"
+                        nil
+                        nil)]
       (doto main-method-visitor
         (.visitCode)
         (.visitFieldInsn (Main/GETSTATIC) "java/lang/System" "out" "Ljava/io/PrintStream;")
         (.visitLdcInsn msg)
-        (.visitMethodInsn (Main/INVOKEVIRTUAL) "java/io/PrintStream" "println" "(Ljava/lang/String;)V")
+        (.visitMethodInsn (Main/INVOKEVIRTUAL)
+                          "java/io/PrintStream"
+                          "println"
+                          "(Ljava/lang/String;)V")
         (.visitInsn (Main/RETURN))
         (.visitMaxs 2 1)
         (.visitEnd)))
+
     (.visitEnd cw)
+
     (doto (DataOutputStream. (FileOutputStream. "HelloFromASM.class"))
       (.write (.toByteArray cw))
       (.flush)
